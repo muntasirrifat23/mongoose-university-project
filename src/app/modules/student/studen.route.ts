@@ -4,4 +4,8 @@ import { StudentController } from './student.controller';
 const router = express.Router();
 router.post('/create-student', StudentController.createStudent);
 
-export default router;
+router.get('/', StudentController.getAllStudent);
+
+router.get('/:studentID', StudentController.singleID);
+
+export const StudentRoutes = router;
