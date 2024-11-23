@@ -19,6 +19,7 @@ export type Guardian = {
 
 export type Student = {
   id: string;
+  password: string;
   name: Name;
   email: string;
   gender: 'male' | 'female';

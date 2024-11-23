@@ -54,6 +54,7 @@ const guardianValidationSchema = z.object({
 // Student Validation Schema
 const studentZodValidationSchema = z.object({
   id: z.string().trim(),
+  password: z.string().trim(),
   name: nameValidationSchema,
   email: z
     .string()

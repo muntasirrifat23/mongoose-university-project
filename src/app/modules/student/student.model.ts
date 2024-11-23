@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import bcrypt from 'bcrypt';
 import {
   Guardian,
   Name,
@@ -7,6 +8,7 @@ import {
   StudentModelInstance,
 } from './student.interface';
 import validator from 'validator';
+import config from '../../config';
 
 // Schema
 const nameSchema = new Schema<Name>({
@@ -47,6 +49,7 @@ const guardianSchema = new Schema<Guardian>({
 const studentSchema = new Schema<Student, StudentModelInstance, StudentMethods>(
   {
     id: { type: String },
+    password: { type: String },
     name: { type: nameSchema, required: true },
     email: {
       type: String,
@@ -76,9 +79,26 @@ const studentSchema = new Schema<Student, StudentModelInstance, StudentMethods>(
   },
 );
 
+// Middleware Document
+studentSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_round),
+  );
+  next();
+});
+
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
 // Model
 studentSchema.methods.isUserExists = async function (id: string) {
   const existingUser = await StudentModel.findOne({ id });
   return existingUser;
 };
-export const StudentModel = model<Student, StudentModelInstance>('Student', studentSchema);
+export const StudentModel = model<Student, StudentModelInstance>(
+  'Student',
+  studentSchema,
+);

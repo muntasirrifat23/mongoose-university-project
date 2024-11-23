@@ -55,6 +55,7 @@ const guardianValidationSchema = Joi.object({
 
 const studentJoiValidationSchema = Joi.object({
   id: Joi.string().trim(),
+  password: Joi.string().trim(),
   name: nameValidationSchema.required(),
   email: Joi.string().email().trim().required().messages({
     'string.email': '{#value} is not a valid email address',
