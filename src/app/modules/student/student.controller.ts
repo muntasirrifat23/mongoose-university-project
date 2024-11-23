@@ -15,6 +15,11 @@ const createStudent = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Something post wrong',
+      error: err,
+    });
   }
 };
 // Get Student
@@ -28,8 +33,14 @@ const getAllStudent = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Something get wrong',
+      error: err,
+    });
   }
 };
+
 // Single Id Student
 const singleID = async (req: Request, res: Response) => {
   try {
@@ -42,6 +53,11 @@ const singleID = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Something get single id wrong',
+      error: err,
+    });
   }
 };
 

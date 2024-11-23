@@ -1,11 +1,33 @@
 import { model, Schema } from 'mongoose';
 import { Guardian, Name, Student } from './student.interface';
+import validator from 'validator';
 
 // Schema
 const nameSchema = new Schema<Name>({
-  fastName: { type: String, required: true },
+  fastName: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: [10, 'Less than 10 character'],
+    trim: true,
+    validate: {
+      validator: function (value: string) {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1); //Rifat
+        return firstNameStr === value;
+      },
+      message: '{VALUE} is not capitalized',
+    },
+  },
   middleName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  lastName: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: '{VALUE} is not valid, only post character',
+    },
+  },
 });
 const guardianSchema = new Schema<Guardian>({
   fatherName: { type: String, required: true },
