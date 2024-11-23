@@ -28,6 +28,7 @@ export type Student = {
   presentAddress: string;
   permanentAddress: string;
   guardian: Guardian;
+  isDeleted: boolean;
 };
 
 export type StudentMethods = {

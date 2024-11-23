@@ -76,6 +76,7 @@ const studentJoiValidationSchema = Joi.object({
   presentAddress: Joi.string().trim().required(),
   permanentAddress: Joi.string().trim().required(),
   guardian: guardianValidationSchema.required(),
+  isDeleted: Joi.boolean(),
 });
 
 export default studentJoiValidationSchema;

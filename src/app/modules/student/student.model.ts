@@ -76,6 +76,7 @@ const studentSchema = new Schema<Student, StudentModelInstance, StudentMethods>(
     presentAddress: { type: String, required: true },
     permanentAddress: { type: String, required: true },
     guardian: { type: guardianSchema, required: true },
+    isDeleted: { type: Boolean, default: false },
   },
 );
 
@@ -93,6 +94,21 @@ studentSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
+
+// Middleware Query
+studentSchema.pre('find', function (next) {
+  this.find({
+    isDeleted: { $ne: true },
+  });
+  next();
+});
+studentSchema.pre('findOne', function (next) {
+  this.find({
+    isDeleted: { $ne: true },
+  });
+  next();
+});
+
 // Model
 studentSchema.methods.isUserExists = async function (id: string) {
   const existingUser = await StudentModel.findOne({ id });
