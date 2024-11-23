@@ -1,5 +1,11 @@
 import { model, Schema } from 'mongoose';
-import { Guardian, Name, Student } from './student.interface';
+import {
+  Guardian,
+  Name,
+  Student,
+  StudentMethods,
+  StudentModelInstance,
+} from './student.interface';
 import validator from 'validator';
 
 // Schema
@@ -38,35 +44,41 @@ const guardianSchema = new Schema<Guardian>({
   matherContactNo: { type: String, required: true },
 });
 
-const studentSchema = new Schema<Student>({
-  id: { type: String },
-  name: { type: nameSchema, required: true },
-  email: {
-    type: String,
-    required: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: '{VALUE} email is not valid',
+const studentSchema = new Schema<Student, StudentModelInstance, StudentMethods>(
+  {
+    id: { type: String },
+    name: { type: nameSchema, required: true },
+    email: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: '{VALUE} email is not valid',
+      },
     },
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female'],
-      message: '{VALUE} must male or female',
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female'],
+        message: '{VALUE} must male or female',
+      },
+      required: [true, 'Gender required'],
     },
-    required: [true, 'Gender required'],
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
+      required: [true, 'must give valid blood group'],
+    },
+    dateOFBirth: { type: String, required: true },
+    presentAddress: { type: String, required: true },
+    permanentAddress: { type: String, required: true },
+    guardian: { type: guardianSchema, required: true },
   },
-  bloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
-    required: [true, 'must give valid blood group'],
-  },
-  dateOFBirth: { type: String, required: true },
-  presentAddress: { type: String, required: true },
-  permanentAddress: { type: String, required: true },
-  guardian: { type: guardianSchema, required: true },
-});
+);
 
 // Model
-export const StudentModel = model<Student>('Student', studentSchema);
+studentSchema.methods.isUserExists = async function (id: string) {
+  const existingUser = await StudentModel.findOne({ id });
+  return existingUser;
+};
+export const StudentModel = model<Student, StudentModelInstance>('Student', studentSchema);
