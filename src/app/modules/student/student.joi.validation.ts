@@ -53,7 +53,7 @@ const guardianValidationSchema = Joi.object({
     }),
 });
 
-const studentValidationSchema = Joi.object({
+const studentJoiValidationSchema = Joi.object({
   id: Joi.string().trim(),
   name: nameValidationSchema.required(),
   email: Joi.string().email().trim().required().messages({
@@ -77,4 +77,4 @@ const studentValidationSchema = Joi.object({
   guardian: guardianValidationSchema.required(),
 });
 
-export default studentValidationSchema;
+export default studentJoiValidationSchema;

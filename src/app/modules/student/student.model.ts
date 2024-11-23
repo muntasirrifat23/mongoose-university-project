@@ -55,7 +55,7 @@ const studentSchema = new Schema<Student>({
       values: ['male', 'female'],
       message: '{VALUE} must male or female',
     },
-    required: [true, ''],
+    required: [true, 'Gender required'],
   },
   bloodGroup: {
     type: String,
