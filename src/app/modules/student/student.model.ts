@@ -41,7 +41,14 @@ const guardianSchema = new Schema<Guardian>({
 const studentSchema = new Schema<Student>({
   id: { type: String },
   name: { type: nameSchema, required: true },
-  email: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} email is not valid',
+    },
+  },
   gender: {
     type: String,
     enum: {
