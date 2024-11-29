@@ -10,7 +10,7 @@ const createStudent = async (req: Request, res: Response) => {
     const { student: studentData } = req.body;
 
     // Joi validation
-    // const { value, error } = studentJoiValidationSchema.validate(studentData);
+    const { value, error } = studentJoiValidationSchema.validate(studentData);
     // console.log(value, error);
 
     // if (error) {
@@ -22,10 +22,10 @@ const createStudent = async (req: Request, res: Response) => {
     // }
 
     // Zod Validation
-    const zodData = studentZodValidationSchema.parse(studentData);
-    console.log(zodData);
+    // const zodData = studentZodValidationSchema.parse(studentData);
+    // console.log(zodData);
 
-    const result = await StudentService.createStudentIntoDB(zodData);
+    const result = await StudentService.createStudentIntoDB(value);
     res.status(200).json({
       success: true,
       message: 'Student is created successfully',
