@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import {
   Guardian,
   Name,
-  Student,
+  TStudent,
   StudentMethods,
   StudentModelInstance,
 } from './student.interface';
@@ -27,15 +27,7 @@ const nameSchema = new Schema<Name>({
     },
   },
   middleName: { type: String, required: true },
-  lastName: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isAlpha(value),
-      message: '{VALUE} is not valid, only post character',
-    },
-  },
+  lastName: { type: String, required: true },
 });
 const guardianSchema = new Schema<Guardian>({
   fatherName: { type: String, required: true },
@@ -46,39 +38,47 @@ const guardianSchema = new Schema<Guardian>({
   matherContactNo: { type: String, required: true },
 });
 
-const studentSchema = new Schema<Student, StudentModelInstance, StudentMethods>(
-  {
-    id: { type: String },
-    password: { type: String },
-    name: { type: nameSchema, required: true },
-    email: {
-      type: String,
-      required: true,
-      validate: {
-        validator: (value: string) => validator.isEmail(value),
-        message: '{VALUE} email is not valid',
-      },
-    },
-    gender: {
-      type: String,
-      enum: {
-        values: ['male', 'female'],
-        message: '{VALUE} must male or female',
-      },
-      required: [true, 'Gender required'],
-    },
-    bloodGroup: {
-      type: String,
-      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
-      required: [true, 'must give valid blood group'],
-    },
-    dateOFBirth: { type: String, required: true },
-    presentAddress: { type: String, required: true },
-    permanentAddress: { type: String, required: true },
-    guardian: { type: guardianSchema, required: true },
-    isDeleted: { type: Boolean, default: false },
+const studentSchema = new Schema<
+  TStudent,
+  StudentModelInstance,
+  StudentMethods
+>({
+  id: { type: String, unique: true, required: [true, 'Id is required'] },
+  user: {
+    type: Schema.Types.ObjectId,
+    unique: true,
+    required: [true, 'User Id is required'],
+    ref: 'User',
   },
-);
+  password: { type: String },
+  name: { type: nameSchema, required: true },
+  email: {
+    type: String,
+    required: true,
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} email is not valid',
+    },
+  },
+  gender: {
+    type: String,
+    enum: {
+      values: ['male', 'female'],
+      message: '{VALUE} must male or female',
+    },
+    required: [true, 'Gender required'],
+  },
+  bloodGroup: {
+    type: String,
+    enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-'],
+    required: [true, 'must give valid blood group'],
+  },
+  dateOFBirth: { type: String, required: true },
+  presentAddress: { type: String, required: true },
+  permanentAddress: { type: String, required: true },
+  guardian: { type: guardianSchema, required: true },
+  isDeleted: { type: Boolean, default: false },
+});
 
 // Middleware Document
 studentSchema.pre('save', async function (next) {
@@ -119,7 +119,7 @@ studentSchema.methods.isUserExists = async function (id: string) {
   const existingUser = await StudentModel.findOne({ id });
   return existingUser;
 };
-export const StudentModel = model<Student, StudentModelInstance>(
+export const StudentModel = model<TStudent, StudentModelInstance>(
   'Student',
   studentSchema,
 );

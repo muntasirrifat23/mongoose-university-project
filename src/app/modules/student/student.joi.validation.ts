@@ -11,25 +11,8 @@ const nameValidationSchema = Joi.object({
     })
     .required(),
 
-  middleName: Joi.string()
-    .min(5)
-    .max(10)
-    .trim()
-    .regex(/^[A-Z][a-zA-Z]*$/)
-    .messages({
-      'string.pattern.base': '{#value} is not capitalized',
-    })
-    .required(),
-
-  lastName: Joi.string()
-    .min(5)
-    .max(10)
-    .trim()
-    .regex(/^[A-Z][a-zA-Z]*$/)
-    .messages({
-      'string.pattern.base': '{#value} is not capitalized',
-    })
-    .required(),
+  middleName: Joi.string().required(),
+  lastName: Joi.string().required(),
 });
 
 const guardianValidationSchema = Joi.object({

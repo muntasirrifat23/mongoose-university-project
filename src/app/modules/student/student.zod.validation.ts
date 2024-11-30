@@ -11,44 +11,18 @@ const nameValidationSchema = z.object({
       message:
         'First name must start with a capital letter and contain only alphabets',
     }),
-  middleName: z
-    .string()
-    .min(5, 'Middle name must have at least 5 characters')
-    .max(10, 'Middle name must have at most 10 characters')
-    .trim()
-    .regex(/^[A-Z][a-zA-Z]*$/, {
-      message:
-        'Middle name must start with a capital letter and contain only alphabets',
-    }),
-  lastName: z
-    .string()
-    .min(5, 'Last name must have at least 5 characters')
-    .max(10, 'Last name must have at most 10 characters')
-    .trim()
-    .regex(/^[A-Z][a-zA-Z]*$/, {
-      message:
-        'Last name must start with a capital letter and contain only alphabets',
-    }),
+  middleName: z.string(),
+  lastName: z.string(),
 });
 
 // Guardian Validation Schema
 const guardianValidationSchema = z.object({
   fatherName: z.string().trim().min(1, 'Father name is required'),
-  fatherOccupation: z.string().trim().min(1, 'Father occupation is required'),
-  fatherContactNo: z
-    .string()
-    .trim()
-    .regex(/^\d{10}$/, {
-      message: 'Father contact number must be a valid 10-digit number',
-    }),
+  fatherOccupation: z.string().trim().optional(),
+  fatherContactNo: z.string().trim().optional(),
   matherName: z.string().trim().min(1, 'Mother name is required'),
-  matherOccupation: z.string().trim().min(1, 'Mother occupation is required'),
-  matherContactNo: z
-    .string()
-    .trim()
-    .regex(/^\d{10}$/, {
-      message: 'Mother contact number must be a valid 10-digit number',
-    }),
+  matherOccupation: z.string().trim().optional(),
+  matherContactNo: z.string().trim().optional(),
 });
 
 // Student Validation Schema
@@ -71,7 +45,7 @@ const studentZodValidationSchema = z.object({
   presentAddress: z.string().trim().min(1, 'Present address is required'),
   permanentAddress: z.string().trim().min(1, 'Permanent address is required'),
   guardian: guardianValidationSchema,
-  isDeleted: z.boolean(),
+  isDeleted: z.boolean().default(false),
 });
 
 export default studentZodValidationSchema;

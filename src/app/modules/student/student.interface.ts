@@ -1,6 +1,4 @@
-// import { Schema, model, connect } from 'mongoose';
-
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type Name = {
   fastName: string;
@@ -17,8 +15,9 @@ export type Guardian = {
   matherContactNo: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
+  user: Types.ObjectId;
   password: string;
   name: Name;
   email: string;
@@ -32,11 +31,11 @@ export type Student = {
 };
 
 export type StudentMethods = {
-  isUserExists(id: string): Promise<Student | null>;
+  isUserExists(id: string): Promise<TStudent | null>;
 };
 
 export type StudentModelInstance = Model<
-  Student,
+  TStudent,
   Record<string, never>,
   StudentMethods
 >;
