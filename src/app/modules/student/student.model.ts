@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
 import {
   Guardian,
   Name,
@@ -8,7 +7,6 @@ import {
   StudentModelInstance,
 } from './student.interface';
 import validator from 'validator';
-import config from '../../config';
 
 // Schema
 const nameSchema = new Schema<Name>({
@@ -43,14 +41,13 @@ const studentSchema = new Schema<
   StudentModelInstance,
   StudentMethods
 >({
-  id: { type: String, unique: true, required: [true, 'Id is required'] },
+  id: { type: String, required: [true, 'Id is required'] },
   user: {
     type: Schema.Types.ObjectId,
     unique: true,
     required: [true, 'User Id is required'],
     ref: 'User',
   },
-  password: { type: String },
   name: { type: nameSchema, required: true },
   email: {
     type: String,
@@ -80,19 +77,9 @@ const studentSchema = new Schema<
   isDeleted: { type: Boolean, default: false },
 });
 
-// Middleware Document
-studentSchema.pre('save', async function (next) {
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_round),
-  );
-  next();
-});
-
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
+// virtual
+studentSchema.virtual('fullName').get(function () {
+  return this.name.fastName + this.name.middleName + this.name.lastName;
 });
 
 // Middleware Query
