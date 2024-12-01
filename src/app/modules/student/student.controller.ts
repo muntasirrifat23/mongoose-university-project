@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentService } from './student.service';
 
 // Post Student
@@ -32,7 +32,11 @@ import { StudentService } from './student.service';
 // };
 
 // Get Student
-const getAllStudent = async (req: Request, res: Response) => {
+const getAllStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await StudentService.getStudentIntoDB();
     res.status(200).json({
@@ -40,18 +44,19 @@ const getAllStudent = async (req: Request, res: Response) => {
       message: 'Student is get successfully',
       data: result,
     });
-  } catch (err: any) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something get wrong',
-      error: err,
-    });
+  } catch (err) {
+    next(err);
+    // console.log(err);
+    // res.status(500).json({
+    //   success: false,
+    //   message: err.message || 'Something get wrong',
+    //   error: err,
+    // });
   }
 };
 
 // Single Id Student
-const singleID = async (req: Request, res: Response) => {
+const singleID = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { studentID } = req.params;
     const result = await StudentService.getSingleStudentDB(studentID);
@@ -60,18 +65,17 @@ const singleID = async (req: Request, res: Response) => {
       message: 'single id get successfully',
       data: result,
     });
-  } catch (err: any) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: err.message || 'get single id wrong',
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
 // Delete id student
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentID } = req.params;
     const result = await StudentService.deleteStudentDB(studentID);
@@ -81,12 +85,7 @@ const deleteStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: err.message || 'delete went wrong',
-      error: err,
-    });
+    next(err);
   }
 };
 
