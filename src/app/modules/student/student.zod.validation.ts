@@ -26,26 +26,29 @@ const guardianValidationSchema = z.object({
 });
 
 // Student Validation Schema
-const studentZodValidationSchema = z.object({
-  id: z.string().trim(),
-  password: z.string().trim(),
-  name: nameValidationSchema,
-  email: z.string().email('Email must be a valid email address').trim(),
-  gender: z.enum(['male', 'female'], {
-    errorMap: () => ({ message: 'Gender must be either male or female' }),
-  }),
-  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-'], {
-    errorMap: () => ({
-      message: 'Blood group must be valid (A+, A-, B+, B-, O+, O-)',
+export const studentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().trim(),
+    student: z.object({
+      name: nameValidationSchema,
+      email: z.string().email('Email must be a valid email address').trim(),
+      gender: z.enum(['male', 'female'], {
+        errorMap: () => ({ message: 'Gender must be either male or female' }),
+      }),
+      bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-'], {
+        errorMap: () => ({
+          message: 'Blood group must be valid (A+, A-, B+, B-, O+, O-)',
+        }),
+      }),
+      dateOFBirth: z.string().refine((val) => !isNaN(Date.parse(val)), {
+        message: 'Date of Birth must be a valid ISO date (YYYY-MM-DD)',
+      }),
+      presentAddress: z.string().trim().min(1, 'Present address is required'),
+      permanentAddress: z
+        .string()
+        .trim()
+        .min(1, 'Permanent address is required'),
+      guardian: guardianValidationSchema,
     }),
   }),
-  dateOFBirth: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: 'Date of Birth must be a valid ISO date (YYYY-MM-DD)',
-  }),
-  presentAddress: z.string().trim().min(1, 'Present address is required'),
-  permanentAddress: z.string().trim().min(1, 'Permanent address is required'),
-  guardian: guardianValidationSchema,
-  isDeleted: z.boolean().default(false),
 });
-
-export default studentZodValidationSchema;

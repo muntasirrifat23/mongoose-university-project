@@ -4,8 +4,6 @@ import { UserRoutes } from '../modules/User/user.router';
 
 const router = Router();
 
-// router.use('/students', StudentRoutes);
-// router.use('/users', UserRoutes);
 const moduleRoutes = [
   {
     path: '/students',
